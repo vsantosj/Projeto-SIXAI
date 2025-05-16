@@ -13,7 +13,7 @@ from functions import (
     generate_chat_prompt, format_context, 
     read_pdf_from_uploaded_file, read_txt_from_uploaded_file, read_csv_from_uploaded_file
 )
-PROFILE_NAME = os.environ.get("AWS_PROFILE", "group6")
+PROFILE_NAME = os.environ.get("AWS_PROFILE", "")
 
 INFERENCE_PROFILE_ARN = "arn:aws:bedrock:us-east-1:851614451056:inference-profile/us.anthropic.claude-3-5-sonnet-20241022-v2:0"
 
@@ -58,34 +58,23 @@ def preprocess_user_message(message):
     """
     return message
 
-def get_boto3_client(service_name, region_name='us-east-1', profile_name='group6'):
+
+def get_boto3_client(service_name, region_name='us-east-1', profile_name=''):
     """
-    Retorna um cliente do serviço AWS especificado.
-    
-    Tenta usar o perfil especificado para desenvolvimento local primeiro.
-    Se falhar, assume que está em uma instância EC2 e usa as credenciais do IAM role.
+    Retorna um cliente do serviço AWS usando IAM Role da instância.
     """
     try:
-        session = boto3.Session(profile_name=profile_name, region_name=region_name)
+        # Primeiro tenta usar o IAM Role (modo de produção)
+        session = boto3.Session(region_name=region_name)
         client = session.client(service_name)
-        if service_name == 'sts':
-            caller_identity = client.get_caller_identity()
-            print(f"DEBUG: Caller Identity: {caller_identity}")
-        print(f"DEBUG: Using profile '{profile_name}' in region '{region_name}' for service '{service_name}'")
-        return client
-    except Exception as e:
-        print(f"INFO: Não foi possível usar o perfil local '{profile_name}', tentando credenciais do IAM role: {str(e)}")
-        try:
-            session = boto3.Session(region_name=region_name)
-            client = session.client(service_name)
-            caller_identity = client.get_caller_identity()
-            print(f"DEBUG: Caller Identity (IAM Role): {caller_identity}")
-            print(f"DEBUG: Using IAM role in region '{region_name}' for service '{service_name}'")
-            return client
-        except Exception as e:
-            print(f"ERRO: Falha ao criar cliente boto3: {str(e)}")
-            return None
 
+        print(f"DEBUG: Usando IAM Role para acessar '{service_name}' na região '{region_name}'")
+        return client
+
+    except Exception as e:
+        print(f"ERRO: Não foi possível acessar a AWS: {str(e)}")
+        print("ATENÇÃO: Verifique se o IAM Role está corretamente associado à instância EC2.")
+        return None
 
 def query_bedrock(message, session_id="", model_params=None, context="", conversation_history=None):
     """
@@ -212,9 +201,6 @@ def check_password():
     if not st.session_state["password_correct"]:
         st.markdown("""
             <style>
-                *{
-                    background-color: black;
-                }
                 .stTextInput > div > div > input {
                     background-color: #f0f2f6;
                     color: #000000;
@@ -862,7 +848,12 @@ if check_password():
         
     if 'messages' not in st.session_state:
         st.session_state.messages = []
-    
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": "Olá! Como posso te ajudar hoje?",
+            "time": datetime.now().strftime("%H:%M")
+        })
+
     if 'chat_history' not in st.session_state:
         st.session_state.chat_history = []
         
@@ -944,11 +935,6 @@ if check_password():
             col1, col2 = st.columns([10, 1])
             with col1:
                 st.markdown(f'<div class="chat-title">{st.session_state.chat_title}</div>', unsafe_allow_html=True)
-            with col2:
-                if st.button("✏️", help="Renomear conversa"):
-                    st.session_state.renaming = True
-                    st.session_state.new_chat_title = st.session_state.chat_title
-                    st.rerun()
         
         messages_container = st.container()
         

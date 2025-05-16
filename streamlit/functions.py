@@ -1,52 +1,28 @@
 import boto3
 import json
 import uuid
-from datetime import datetime, date
+from datetime import date
 import os
-import pandas as pd
-import PyPDF2
 
-PROFILE_NAME = os.environ.get('AWS_PROFILE', 'group6')
+PROFILE_NAME = os.environ.get('AWS_PROFILE', '')
 
-def get_boto3_client(service_name, region_name='us-east-1', profile_name='group6'):
+
+def get_boto3_client(service_name, region_name='us-east-1', profile_name=''):
     """
-    Retorna um cliente do serviço AWS especificado.
-    
-    Tenta usar o perfil especificado para desenvolvimento local primeiro.
-    Se falhar, assume que está em uma instância EC2 e usa as credenciais do IAM role.
+    Retorna um cliente do serviço AWS usando IAM Role da instância.
     """
     try:
-        session = boto3.Session(profile_name=profile_name, region_name=region_name)
+        # Primeiro tenta usar o IAM Role (modo de produção)
+        session = boto3.Session(region_name=region_name)
         client = session.client(service_name)
-        if service_name == 'sts':
-            caller_identity = client.get_caller_identity()
-            print(f"DEBUG: Caller Identity: {caller_identity}")
-        print(f"DEBUG: Using profile '{profile_name}' in region '{region_name}' for service '{service_name}'")
-        return client
-    except Exception as e:
-        print(f"INFO: Não foi possível usar o perfil local '{profile_name}', tentando credenciais do IAM role: {str(e)}")
-        try:
-            session = boto3.Session(region_name=region_name)
-            client = session.client(service_name)
-            caller_identity = client.get_caller_identity()
-            print(f"DEBUG: Caller Identity (IAM Role): {caller_identity}")
-            print(f"DEBUG: Using IAM role in region '{region_name}' for service '{service_name}'")
-            return client
-        except Exception as e:
-            print(f"ERRO: Falha ao criar cliente boto3: {str(e)}")
-            return None
 
-def read_pdf(file_path):
-    """Lê o conteúdo de um arquivo PDF e retorna como string."""
-    try:
-        with open(file_path, 'rb') as file:
-            reader = PyPDF2.PdfReader(file)
-            text = ""
-            for page in reader.pages:
-                text += page.extract_text() + "\n"
-        return text
+        print(f"DEBUG: Usando IAM Role para acessar '{service_name}' na região '{region_name}'")
+        return client
+
     except Exception as e:
-        return f"Erro ao ler PDF: {str(e)}"
+        print(f"ERRO: Não foi possível acessar a AWS: {str(e)}")
+        print("ATENÇÃO: Verifique se o IAM Role está corretamente associado à instância EC2.")
+        return None
 
 def read_txt(file_path):
     """Lê o conteúdo de um arquivo TXT e retorna como string."""
@@ -56,14 +32,6 @@ def read_txt(file_path):
     except Exception as e:
         return f"Erro ao ler TXT: {str(e)}"
 
-def read_csv(file_path):
-    """Lê o conteúdo de um arquivo CSV e retorna como string."""
-    try:
-        df = pd.read_csv(file_path)
-        return df.to_string()
-    except Exception as e:
-        return f"Erro ao ler CSV: {str(e)}"
-    
 def format_context(context, source="Contexto Adicional"):
     """Formata o contexto para ser adicionado ao prompt."""
     return f"\n\n{source}:\n{context}\n\n"
@@ -166,7 +134,7 @@ def read_pdf_from_uploaded_file(uploaded_file):
     try:
         import io
         from PyPDF2 import PdfReader
-        
+
         pdf_bytes = io.BytesIO(uploaded_file.getvalue())
         reader = PdfReader(pdf_bytes)
         text = ""
@@ -188,7 +156,7 @@ def read_csv_from_uploaded_file(uploaded_file):
     try:
         import pandas as pd
         import io
-        
+
         df = pd.read_csv(io.StringIO(uploaded_file.getvalue().decode("utf-8")))
         return df.to_string()
     except Exception as e:

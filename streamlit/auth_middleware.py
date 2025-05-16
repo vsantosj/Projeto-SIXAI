@@ -137,6 +137,7 @@ def check_password_with_cookie():
                 }
             </style>
         """, unsafe_allow_html=True)
+
         st.markdown('<div class="login-form">', unsafe_allow_html=True)
         st.markdown('<h1 class="login-title">Login</h1>', unsafe_allow_html=True)
         
