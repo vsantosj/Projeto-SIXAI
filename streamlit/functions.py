@@ -1,14 +1,14 @@
 import boto3
 import json
 import uuid
-from datetime import datetime, date
+from datetime import date
 import os
 import pandas as pd
 import PyPDF2
 
-PROFILE_NAME = os.environ.get('AWS_PROFILE', 'group6')
+PROFILE_NAME = os.environ.get('AWS_PROFILE', 'sixai')
 
-def get_boto3_client(service_name, region_name='us-east-1', profile_name='group6'):
+def get_boto3_client(service_name, region_name='us-east-1', profile_name='sixai'):
     """
     Retorna um cliente do serviço AWS especificado.
     
@@ -63,7 +63,7 @@ def read_csv(file_path):
         return df.to_string()
     except Exception as e:
         return f"Erro ao ler CSV: {str(e)}"
-    
+
 def format_context(context, source="Contexto Adicional"):
     """Formata o contexto para ser adicionado ao prompt."""
     return f"\n\n{source}:\n{context}\n\n"
@@ -166,7 +166,7 @@ def read_pdf_from_uploaded_file(uploaded_file):
     try:
         import io
         from PyPDF2 import PdfReader
-        
+
         pdf_bytes = io.BytesIO(uploaded_file.getvalue())
         reader = PdfReader(pdf_bytes)
         text = ""
@@ -186,9 +186,8 @@ def read_txt_from_uploaded_file(uploaded_file):
 def read_csv_from_uploaded_file(uploaded_file):
     """Lê o conteúdo de um arquivo CSV carregado pelo Streamlit."""
     try:
-        import pandas as pd
         import io
-        
+
         df = pd.read_csv(io.StringIO(uploaded_file.getvalue().decode("utf-8")))
         return df.to_string()
     except Exception as e:
