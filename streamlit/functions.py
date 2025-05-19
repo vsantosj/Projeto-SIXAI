@@ -4,30 +4,36 @@ import uuid
 from datetime import date
 import os
 
-PROFILE_NAME = os.environ.get("AWS_PROFILE", "")
+PROFILE_NAME = os.environ.get("AWS_PROFILE", "sixai")
 
 
-def get_boto3_client(service_name, region_name='us-east-1', profile_name=''):
+def get_boto3_client(service_name, region_name='us-east-1', profile_name='sixai'):
     """
-    Retorna um cliente do serviço AWS usando IAM Role da instância.
+    Retorna um cliente do serviço AWS especificado.
+    
+    Tenta usar o perfil especificado para desenvolvimento local primeiro.
+    Se falhar, assume que está em uma instância EC2 e usa as credenciais do IAM role.
     """
     try:
-        # Primeiro tenta usar o IAM Role (modo de produção)
-        session = boto3.Session(region_name=region_name)
+        session = boto3.Session(profile_name=profile_name, region_name=region_name)
         client = session.client(service_name)
-
-        print(f"DEBUG: Usando IAM Role para acessar '{service_name}' na região '{region_name}'")
+        if service_name == 'sts':
+            caller_identity = client.get_caller_identity()
+            print(f"DEBUG: Caller Identity: {caller_identity}")
+        print(f"DEBUG: Using profile '{profile_name}' in region '{region_name}' for service '{service_name}'")
         return client
-
     except Exception as e:
-        print(f"ERRO: Não foi possível acessar a AWS: {str(e)}")
-        print("ATENÇÃO: Verifique se o IAM Role está corretamente associado à instância EC2.")
-        return None
-
-def format_context(context, source="Contexto Adicional"):
-    """Formata o contexto para ser adicionado ao prompt."""
-    return f"\n\n{source}:\n{context}\n\n"
-
+        print(f"INFO: Não foi possível usar o perfil local '{profile_name}', tentando credenciais do IAM role: {str(e)}")
+        try:
+            session = boto3.Session(region_name=region_name)
+            client = session.client(service_name)
+            caller_identity = client.get_caller_identity()
+            print(f"DEBUG: Caller Identity (IAM Role): {caller_identity}")
+            print(f"DEBUG: Using IAM role in region '{region_name}' for service '{service_name}'")
+            return client
+        except Exception as e:
+            print(f"ERRO: Falha ao criar cliente boto3: {str(e)}")
+            return None
 
 # ALTERAR
 def generate_chat_prompt(user_message, conversation_history=None, context=""):
