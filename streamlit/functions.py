@@ -24,7 +24,6 @@ def get_boto3_client(service_name, region_name='us-east-1', profile_name=''):
         print("ATENÇÃO: Verifique se o IAM Role está corretamente associado à instância EC2.")
         return None
 
-
 def format_context(context, source="Contexto Adicional"):
     """Formata o contexto para ser adicionado ao prompt."""
     return f"\n\n{source}:\n{context}\n\n"
