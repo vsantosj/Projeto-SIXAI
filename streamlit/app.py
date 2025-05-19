@@ -13,7 +13,7 @@ from functions import (
     generate_chat_prompt, get_boto3_client
 )
 
-PROFILE_NAME = os.environ.get("AWS_PROFILE", "sixai")
+PROFILE_NAME = os.environ.get("AWS_PROFILE", "")
 
 INFERENCE_PROFILE_ARN = "arn:aws:bedrock:us-east-1:851614451056:inference-profile/us.anthropic.claude-3-5-sonnet-20241022-v2:0"
 
