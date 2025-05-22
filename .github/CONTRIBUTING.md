@@ -8,7 +8,7 @@ Este projeto foi desenvolvido por estudantes da **Escola da Nuvem** com foco em 
 ## 💡 Formas de Contribuir
 
 1. **Dar feedback**: Sugestões e críticas construtivas são bem-vindas.
-2. **Reportar bugs**: Achou um erro? Crie uma [issue](https://github.com/SEU_REPOSITORIO/issues).
+2. **Reportar bugs**: Achou um erro? Crie uma [issue](https://github.com/vsantosj/Projeto-SIXAI/issues).
 3. **Sugerir melhorias**: Tem uma funcionalidade nova em mente? Compartilhe conosco!
 4. **Contribuir com código**: Sabe Python, Streamlit ou AWS? Mãos à obra!
 5. **Melhorar a documentação**: Correções, tutoriais ou traduções ajudam muito.
