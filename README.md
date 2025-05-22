@@ -13,7 +13,7 @@ Este projeto é um **chatbot com inteligência artificial**, desenvolvido em gru
 | Luis Kuklinshi      | Lider de Projeto               | [@Luis-Kuklinshi]()      |
 | Jessica Picarelli   |Arquiteta de Software           | [@JessicaPicarelli]() |
 | Fábio Rocha          | Scrum Master                  | [@Fabio-Rocha]() |
-| Bruno Sampaio       | Arquiteto Cloud                | [@Bruno-Sampaio]() |
+| Bruno Sampaio       | Arquiteto Cloud                | [@Bruno-Sampaio](https://github.com/Brunodfsampaio) |
 
 ## 🎯 Objetivo
 
@@ -33,7 +33,7 @@ Usuário → Interface Web (Streamlit - EC2) → Amazon Bedrock → Claude 3.5 S
 ```
 ## 🎥 Demonstração
 
-![Demonstração do app](imagens/demo.gif)
+[![Demonstração do app](https://img.youtube.com/vi/Wt1mKvZk7UE/0.jpg)](https://www.youtube.com/watch?v=Wt1mKvZk7UE)
 
 ## 🧠 Aprendizados
 - Como usar LLMs em casos de uso reais e sociais.
@@ -49,3 +49,17 @@ Usuário → Interface Web (Streamlit - EC2) → Amazon Bedrock → Claude 3.5 S
 - Claude 3.5 Sonnet – Modelo de LLM usado para gerar respostas
 
 ---
+
+🚀 *"A tecnologia é uma ponte entre desafios e soluções. Estamos apenas começando!"*
+
+💬 **Estamos abertos a sugestões de melhoria! Sua contribuição pode fazer a diferença.**
+
+
+---
+
+## 🤝 Como Contribuir
+
+Quer contribuir com o SIXAI Chatbot? Toda ajuda é bem-vinda! Aqui estão algumas formas de colaborar:
+
+Para mais detalhes sobre como contribuir, consulte o arquivo [CONTRIBUTING.md](CONTRIBUTING.md).
+```
