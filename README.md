@@ -61,5 +61,5 @@ Usuário → Interface Web (Streamlit - EC2) → Amazon Bedrock → Claude 3.5 S
 
 Quer contribuir com o SIXAI Chatbot? Toda ajuda é bem-vinda! Aqui estão algumas formas de colaborar:
 
-Para mais detalhes sobre como contribuir, consulte o arquivo [CONTRIBUTING.md](CONTRIBUTING.md).
+Para mais detalhes sobre como contribuir, consulte o arquivo [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 ```
