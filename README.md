@@ -31,7 +31,7 @@ A aplicação foi projetada para receber mensagens dos usuários e oferecer resp
 ```plaintext
 Usuário → Interface Web (Streamlit - EC2) → Amazon Bedrock → Claude 3.5 Sonnet → Resposta → Interface Web
 ```
-## 🎥 Demonstração
+## 🎥 Demonstração - Clique na imagem.
 
 [![Demonstração do app](https://img.youtube.com/vi/Wt1mKvZk7UE/0.jpg)](https://www.youtube.com/watch?v=Wt1mKvZk7UE)
 
